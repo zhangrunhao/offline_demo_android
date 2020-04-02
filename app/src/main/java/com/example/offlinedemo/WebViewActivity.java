@@ -6,18 +6,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import wendu.dsbridge.DWebView;
 
 public class WebViewActivity extends AppCompatActivity {
+    private DWebView dwebView;
+
     @Override
     public  void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
-        WebView myWebView = findViewById(R.id.webview);
-        myWebView.loadUrl("http://www.baidu.com");
-        myWebView.setWebViewClient(new WebViewClient() {
+        dwebView = findViewById(R.id.dwebview);
+        dwebView.addJavascriptObject(new JsApi(), null);
+
+        dwebView.loadUrl("http://10.2.153.102:6622/offline_demo_fe/index.html");
+        dwebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -31,9 +37,8 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
 
+    public void reloadUrl() {
+        dwebView.reload();
     }
 }

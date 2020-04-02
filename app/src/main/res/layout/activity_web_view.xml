@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <WebView
-        android:id="@+id/webview"
+
+    <wendu.dsbridge.DWebView
+        android:id="@+id/dwebview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="649dp"></wendu.dsbridge.DWebView>
 </LinearLayout>
