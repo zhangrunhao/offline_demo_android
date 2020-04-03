@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,5 +10,13 @@
     <wendu.dsbridge.DWebView
         android:id="@+id/dwebview"
         android:layout_width="match_parent"
-        android:layout_height="649dp"></wendu.dsbridge.DWebView>
+        android:layout_height="400dp"></wendu.dsbridge.DWebView>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="刷新"
+        />
+
 </LinearLayout>
