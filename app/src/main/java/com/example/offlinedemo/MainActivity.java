@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             FileInputStream inputStream = new FileInputStream(task.getTargetFilePath());
                             CompressUtils.unzip(inputStream, getFilesDir());
-                            readFile();
+//                            readFile();
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -99,14 +99,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readFile() throws IOException {
-        File f = new File("/data/user/0/com.example.offlinedemo/files/js/index.js");
+        File f = new File("/data/user/0/com.example.offlinedemo/files/css/index.css");
         int length = (int) f.length();
         byte[] buff = new byte[length];
         FileInputStream fin = new FileInputStream(f);
         fin.read(buff);
         fin.close();
-        Log.i("zhangrh", "readFile: " + new String(buff));
-
-        Log.i("zhangrh", "readFile: " + f.toString());
     }
 }

@@ -4,8 +4,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import wendu.dsbridge.DWebView;
 
@@ -19,8 +29,24 @@ public class WebViewActivity extends AppCompatActivity {
 
         dwebView = findViewById(R.id.dwebview);
         dwebView.addJavascriptObject(new JsApi(), null);
-        dwebView.loadUrl("http://10.2.153.102:6622/offline_demo_fe/index.html");
-
+        dwebView.loadUrl("http://10.2.154.97:6622/offline_demo_fe/index.html");
+        dwebView.setWebContentsDebuggingEnabled(true);
+        dwebView.setWebViewClient(new WebViewClient(){
+            @Nullable
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                WebResourceResponse response = null;
+                if (request.getUrl().toString().equals("http://10.2.154.97:6622/offline_demo_fe/css/index.css")) {
+                    try {
+                        InputStream is = new FileInputStream("/data/user/0/com.example.offlinedemo/files/css/index.css");
+                        response = new WebResourceResponse("text/css", "UTF-8", is);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return response;
+            }
+        });
         Button btn = (Button) findViewById(R.id.button3);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
