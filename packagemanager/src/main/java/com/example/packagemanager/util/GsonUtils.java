@@ -12,6 +12,14 @@ import java.io.Reader;
  */
 public class GsonUtils {
     private static final Gson gson = new Gson();
+    public static <T> T jsonFromString(String json, Class<T> classOfT) {
+        try {
+            return gson.fromJson(json, classOfT);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static <T> T jsonFromFileStream(InputStream json, Class<T> classOfT) {
         Reader reader = null;
         BufferedReader bufferedReader = null;
@@ -27,12 +35,14 @@ public class GsonUtils {
                 try {
                     reader.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             if (bufferedReader != null) {
                 try {
                     reader.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

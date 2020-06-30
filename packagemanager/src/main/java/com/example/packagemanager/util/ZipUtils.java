@@ -7,10 +7,50 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ZipUtils {
+    /**
+     * 获取zip中的字符串
+     * @param zipFileStream zip流
+     * @return 字符串
+     */
+    public static String getStringFromZip(InputStream zipFileStream) {
+        ZipInputStream inZip = null;
+        try {
+            inZip = new ZipInputStream(zipFileStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        ZipEntry zipEntry = readZipNextEntry(inZip);
+        while (zipEntry != null) {
+            String szName = zipEntry.getName();
+            // index.json
+            if (szName.equals(Constants.RESOURCE_MIDDLE_PATH + File.separator + Constants.RESOURCE_INDEX_NAME)) break;
+            zipEntry = readZipNextEntry(inZip);
+        }
+        if (zipEntry == null) {
+            FileUtils.safeCloseFile(inZip);
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int len = -1;
+        byte[] buffer = new byte[2048];
+        len = readZipFile(inZip, buffer);
+        while (len != -1) {
+            if (len == -2) break;
+            sb.append(new String(buffer, 0, len));
+            len = readZipFile(inZip, buffer);
+        }
+        if (FileUtils.safeCloseFile(inZip)) return sb.toString();
+        return "";
+
+    }
     /**
      * 解压zip到指定的目录
      * @param zipFileString 需要解压的zip目录

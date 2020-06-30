@@ -19,6 +19,33 @@ import java.nio.channels.FileChannel;
  * 文件工具
  */
 public class FileUtils {
+    // 复制文件
+    public static boolean copyFile(InputStream inputStream, String newPath) {
+        try {
+            int byteRead = 0;
+            File file = new File(newPath);
+            if (file.exists()) {
+                if (!file.delete()) return false;
+            }
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) return false;
+            }
+            if (!file.createNewFile()) return false;
+
+            FileOutputStream fs = new FileOutputStream(file);
+            byte[] buffer = new byte[1024 * 16];
+            while ((byteRead = inputStream.read(buffer)) != -1) {
+                fs.write(buffer, 0, byteRead);
+            }
+            fs.flush();
+            safeCloseFile(inputStream);
+            safeCloseFile(fs);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     // 安全关闭文件
     public static boolean safeCloseFile(Closeable file) {
         try {
