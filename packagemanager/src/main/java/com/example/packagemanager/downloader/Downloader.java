@@ -46,8 +46,3 @@ public class Downloader {
         downloadTask.start();
     }
 }
-
-interface DownloadCallback {
-    void onSuccess(String packageId);
-    void onFailure(String packageId);
-}
