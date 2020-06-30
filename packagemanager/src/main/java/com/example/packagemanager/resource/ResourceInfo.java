@@ -1,4 +1,4 @@
-package com.example.packagemanager;
+package com.example.packagemanager.resource;
 
 /**
  * 每个url对应的资源管理信息

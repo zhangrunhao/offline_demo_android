@@ -2,15 +2,19 @@ package com.example.packagemanager;
 
 import android.content.Context;
 
-import java.util.Map;
+import com.example.packagemanager.packageManager.PackageInstaller;
+import com.example.packagemanager.resource.ResourceManager;
 
 /**
  * 离线包管理器
  */
 public class OfflinePackageManager {
     private Context context;
+    private ResourceManager resourceManager;
+    private PackageInstaller packageInstaller;
     public  void init(Context context) {
-
-        this.context = context; // 需要使用离线包的activity
+        this.context = context;
+        this.resourceManager = new ResourceManager(context);
+        this.packageInstaller = new PackageInstaller(context);
     }
 }

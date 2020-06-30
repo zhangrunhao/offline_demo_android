@@ -1,4 +1,4 @@
-package com.example.packagemanager;
+package com.example.packagemanager.resource;
 
 import android.net.Uri;
 import android.text.TextUtils;
