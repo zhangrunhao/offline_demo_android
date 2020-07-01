@@ -19,6 +19,13 @@ import java.nio.channels.FileChannel;
  * 文件工具
  */
 public class FileUtils {
+    // 获取资源中的索引文件
+    public  static File getResourceIndexFile(Context context, String packageId, String version) {
+        String indexPath = getPackageWorkName(context, packageId, version)
+                + File.separator + Constants.RESOURCE_MIDDLE_PATH
+                + File.separator + Constants.RESOURCE_INDEX_NAME;
+        return new File(indexPath);
+    }
     // 复制文件
     public static boolean copyFile(InputStream inputStream, String newPath) {
         try {

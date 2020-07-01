@@ -18,20 +18,14 @@ import com.example.packagemanager.resource.ResourceManager;
  */
 public class OfflinePackageManager {
     private Context context;
-    private ResourceManager resourceManager;
-    private PackageInstaller packageInstaller;
     private PackageConfig config = new PackageConfig();
-    private AssetResourceLoader assertLoader;
-    private Handler packageHandler;
+    private DownloaderHandler packageHandler;
     private HandlerThread packageThread;
 
     // 初始化离线包
     public  void init(Context context) {
         this.context = context;
-        this.resourceManager = new ResourceManager(context);
-        this.packageInstaller = new PackageInstaller(context);
         if (config.isEnableAssets() && !TextUtils.isEmpty(config.getAssetPath())) {
-            assertLoader = new AssetResourceLoader(context);
             ensurePackageeThread();
             packageHandler.sendEmptyMessage(DownloaderState.INIT_ASSETS);
         }
@@ -49,14 +43,14 @@ public class OfflinePackageManager {
 
     // 获取资源
     public WebResourceResponse getResource(String url) {
-        return null;
+        return this.packageHandler.getResource(url);
     }
 
     private void ensurePackageeThread() {
         if (packageThread == null)  {
             packageThread = new HandlerThread("offline_package_thread");
             packageThread.start();
-            packageHandler = new DownloaderHandler(packageThread.getLooper());
+            packageHandler = new DownloaderHandler(this.context, packageThread.getLooper());
         }
     }
 }
