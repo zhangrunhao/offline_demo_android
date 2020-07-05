@@ -30,7 +30,7 @@ public class ResourceInfo {
     public String getPackageId() {return this.packageId;}
     public String getRemoteUrl() {return this.remoteUrl;}
     public String getLocalPath() {return this.localPath;}
-    public String getMimeType() {return this.localPath;}
+    public String getMimeType() {return this.mimeType;}
     public String getPath() {return this.path;}
     public String getMd5() {return this.md5;}
 }

@@ -3,10 +3,11 @@ package com.example.packagemanager.packageManager;
 import java.util.List;
 
 /**
- * 离线包, index(索引)文件信息
+ * 离线包索引信息 (所有离线包的集合信息)
  */
 public class PackageEntry {
-    private List<PackageInfo> items;
-    public void setItems (List<PackageInfo> items) {this.items = items;}
-    public List<PackageInfo> getItems() {return this.items;}
+    private int errorCode;
+    private List<PackageInfo> data;
+    public void setItems (List<PackageInfo> data) {this.data = data;}
+    public List<PackageInfo> getItems() {return this.data;}
 }

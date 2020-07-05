@@ -3,7 +3,7 @@ package com.example.packagemanager.resource;
 import java.util.List;
 
 /**
- *
+ * 单个包中所有的资源集合信息
  */
 public class ResourceInfoEntry {
     private String version;

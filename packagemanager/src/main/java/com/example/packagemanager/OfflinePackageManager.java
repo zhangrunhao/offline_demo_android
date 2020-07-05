@@ -1,17 +1,15 @@
 package com.example.packagemanager;
 
 import android.content.Context;
-import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.text.TextUtils;
 import android.webkit.WebResourceResponse;
 
+import com.example.packagemanager.downloader.DownloadCallback;
 import com.example.packagemanager.downloader.DownloaderHandler;
 import com.example.packagemanager.downloader.DownloaderState;
-import com.example.packagemanager.packageManager.PackageInstaller;
-import com.example.packagemanager.resource.AssetResourceLoader;
-import com.example.packagemanager.resource.ResourceManager;
+
 
 /**
  * 离线包管理器
@@ -22,8 +20,7 @@ public class OfflinePackageManager {
     private DownloaderHandler packageHandler;
     private HandlerThread packageThread;
 
-    // 初始化离线包
-    public  void init(Context context) {
+    public OfflinePackageManager(Context context) {
         this.context = context;
         if (config.isEnableAssets() && !TextUtils.isEmpty(config.getAssetPath())) {
             ensurePackageeThread();
@@ -50,7 +47,23 @@ public class OfflinePackageManager {
         if (packageThread == null)  {
             packageThread = new HandlerThread("offline_package_thread");
             packageThread.start();
-            packageHandler = new DownloaderHandler(this.context, packageThread.getLooper());
+            packageHandler = new DownloaderHandler(this.context, packageThread.getLooper(), new DownloadCallback() {
+                @Override
+                public void onSuccess(String packageId) {
+                    Message message = Message.obtain();
+                    message.what = DownloaderState.DOWNLOAD_SUCCESS;
+                    message.obj = packageId;
+                    packageHandler.sendMessage(message);
+                }
+
+                @Override
+                public void onFailure(String packageId) {
+                    Message message = Message.obtain();
+                    message.what = DownloaderState.DOWNLOAD_FAILED;
+                    message.obj = packageId;
+                    packageHandler.sendMessage(message);
+                }
+            });
         }
     }
 }

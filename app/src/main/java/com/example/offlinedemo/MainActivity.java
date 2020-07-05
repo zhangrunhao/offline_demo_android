@@ -1,13 +1,22 @@
 package com.example.offlinedemo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebResourceResponse;
 import android.widget.EditText;
 
+import com.example.packagemanager.Constants;
+import com.example.packagemanager.OfflinePackageManager;
+import com.example.packagemanager.util.Logger;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadLargeFileListener;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -17,14 +26,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.expamle.myfirestapp.MESSAGE";
     private Object  that;
+    private OfflinePackageManager packageManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Context context = getApplicationContext();
+        this.packageManager = new OfflinePackageManager(context);
     }
 
     public void  sendMessage(View view) {
@@ -90,8 +104,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMyWebView(View view) {
-        Intent intent = new Intent(this, WebViewActivity.class);
-        startActivity(intent);
+//        WebResourceResponse response = packageManager.getResource("http://10.2.155.99/main.css");
+//        Intent intent = new Intent(this, WebViewActivity.class);
+//        startActivity(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    String url = Constants.BASE_URL + "/api/getPackageIndex?appName=sohu";
+                    Request request = new Request.Builder().url(url).build();
+                    try (Response response = client.newCall(request).execute()) {
+                        String data =  response.body().string();
+                        Log.d("getPackageIndex", "do post");
+                        packageManager.update(data);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void readFile() throws IOException {

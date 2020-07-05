@@ -51,7 +51,7 @@ public class ResourceManager {
             + File.separator
             + Constants.RESOURCE_MIDDLE_PATH
             + File.separator
-            + Constants.RESOURCE_MIDDLE_PATH;
+            + Constants.RESOURCE_INDEX_NAME;
         Logger.d("updateResource indexFileName: " + indexFileName);
 
         File indexFile = new File(indexFileName);
@@ -119,14 +119,14 @@ public class ResourceManager {
 
         InputStream inputStream = FileUtils.getInputStream(resourceInfo.getLocalPath());
         if (inputStream == null) {
-            Logger.e("getWebResponseResource: " + url + "inputStream is null");
+            Logger.e("getWebResponseResource: " + url + " inputStream is null");
             return null;
         }
-        // 资源验证
-        if (validator !=null && !validator.validate(resourceInfo)) {
-            safeRemoveResource(key);
-            return null;
-        }
+        // TODO: 资源验证
+//        if (validator !=null && !validator.validate(resourceInfo)) {
+//            safeRemoveResource(key);
+//            return null;
+//        }
 
         WebResourceResponse response;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

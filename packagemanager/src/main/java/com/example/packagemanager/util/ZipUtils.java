@@ -13,11 +13,11 @@ import java.util.zip.ZipInputStream;
 
 public class ZipUtils {
     /**
-     * 获取zip中的字符串
+     * 获取zip中index.json的字符串
      * @param zipFileStream zip流
      * @return 字符串
      */
-    public static String getStringFromZip(InputStream zipFileStream) {
+    public static String getIndexJsonStringFromZip(InputStream zipFileStream) {
         ZipInputStream inZip = null;
         try {
             inZip = new ZipInputStream(zipFileStream);
@@ -29,7 +29,7 @@ public class ZipUtils {
         ZipEntry zipEntry = readZipNextEntry(inZip);
         while (zipEntry != null) {
             String szName = zipEntry.getName();
-            // index.json
+            // package/index.json
             if (szName.equals(Constants.RESOURCE_MIDDLE_PATH + File.separator + Constants.RESOURCE_INDEX_NAME)) break;
             zipEntry = readZipNextEntry(inZip);
         }
@@ -49,7 +49,6 @@ public class ZipUtils {
         }
         if (FileUtils.safeCloseFile(inZip)) return sb.toString();
         return "";
-
     }
     /**
      * 解压zip到指定的目录
@@ -83,6 +82,7 @@ public class ZipUtils {
                 }
                 if (!writeUnZipFileToFile(inZip, file)) break;
             }
+            zipEntry = readZipNextEntry(inZip);
         }
 
         return FileUtils.safeCloseFile(inZip);
@@ -164,6 +164,7 @@ public class ZipUtils {
         return true;
     }
 
+    // 读取zip中的下一个文件
     private static ZipEntry readZipNextEntry(ZipInputStream inZip) {
         ZipEntry zipEntry = null;
         try {

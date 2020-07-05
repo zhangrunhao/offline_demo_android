@@ -2,6 +2,7 @@ package com.example.packagemanager.downloader;
 
 import android.content.Context;
 
+import com.example.packagemanager.Constants;
 import com.example.packagemanager.packageManager.PackageInfo;
 import com.example.packagemanager.util.FileUtils;
 import com.example.packagemanager.util.Logger;
@@ -21,6 +22,7 @@ public class Downloader {
     }
 
     public void download(PackageInfo packageInfo, final DownloadCallback callback) {
+        FileDownloader.setup(context);
         BaseDownloadTask downloadTask = FileDownloader.getImpl()
                 .create(packageInfo.getDownloadUrl())
                 .setTag(packageInfo.getPackageId())

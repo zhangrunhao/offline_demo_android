@@ -7,18 +7,42 @@ import android.text.TextUtils;
 import com.example.packagemanager.Constants;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.channels.FileChannel;
 
 /**
  * 文件工具
  */
 public class FileUtils {
+    // inputStream to String
+    public static String convertStreamToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
     // 获取资源中的索引文件
     public  static File getResourceIndexFile(Context context, String packageId, String version) {
         String indexPath = getPackageWorkName(context, packageId, version)
@@ -47,7 +71,8 @@ public class FileUtils {
             fs.flush();
             safeCloseFile(inputStream);
             safeCloseFile(fs);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Logger.e("copyFile error: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -63,6 +88,7 @@ public class FileUtils {
         }
         return true;
     }
+
     // 复制单个文件
     public static boolean copyFileCover(String srcFileName, String descFileName) {
         File srcFile = new File(srcFileName);
@@ -132,7 +158,7 @@ public class FileUtils {
                 + version + File.separator
                 + Constants.PACKAGE_MERGE;
     }
-    // 根据packageId获取update目录地址
+    // 获取update.zip目录地址
     public static String getPackageUpdateName(Context context, String packageId, String version) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;
@@ -150,7 +176,7 @@ public class FileUtils {
                 + version + File.separator
                 + Constants.PACKAGE_DOWNLOAD;
     }
-    // 根据packageId, 版本号, 获取静态资源目录
+    // 获取静态资源目录
     public static String getPackageAssetsName(Context context, String packageId, String version) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;
@@ -179,12 +205,12 @@ public class FileUtils {
         if (TextUtils.isEmpty(root)) return null;
         return root + File.separator + packageId;
     }
-    // 根据packageId获取package.json地址
+    // 根据packageId获取packageIndex.json地址
     public static String getPackageIndexFileName(Context context) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;
         makeDir(root);
-        return root + File.separator + Constants.PACKAGE_FILE_PACKAGE_INDEX;
+        return root + File.separator + Constants.PACKAGE_FILE_INDEX;
     }
     // 创建文件夹
     public static boolean makeDir(String path) {
@@ -196,7 +222,9 @@ public class FileUtils {
     }
     // 根据fileName获取inputStream
     public static InputStream getInputStream(String fileName) {
-        if (!TextUtils.isEmpty(fileName)) return null;
+        if (TextUtils.isEmpty(fileName)) {
+            return null;
+        }
         File file = new File(fileName);
         if (!file.exists()) return null;
         if (file.isDirectory()) return null;
@@ -213,7 +241,10 @@ public class FileUtils {
     public static String getPackageWorkName(Context context, String packageId, String version) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;
-        return root + File.separator + packageId + File.separator + version + File.separator + Constants.PACKAGE_WORK;
+        return root + File.separator
+                + packageId + File.separator
+                + version + File.separator
+                + Constants.PACKAGE_WORK;
     }
     // 获取根地址
     public static String getPackageRootPath(Context context) {
