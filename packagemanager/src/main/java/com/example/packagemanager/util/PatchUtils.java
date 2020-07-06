@@ -1,8 +1,5 @@
-package lib.bsdiff;
+package com.example.packagemanager.util;
 
-/**
- * Created by zhangrh on 2020/7/5
- */
 public class PatchUtils {
 
     static PatchUtils instance;

@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.example.packagemanager.util.FileUtils;
 import com.example.packagemanager.util.GsonUtils;
 import com.example.packagemanager.util.Logger;
-import lib.bsdiff.PatchUtils;
+import com.example.packagemanager.util.PatchUtils;
 import com.example.packagemanager.util.ZipUtils;
 
 import java.io.File;

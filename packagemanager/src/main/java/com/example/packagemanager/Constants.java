@@ -5,7 +5,7 @@ package com.example.packagemanager;
  */
 public class Constants {
     // 远程离线包目录
-    public static final String BASE_URL = "http://192.168.1.47:5003";
+    public static final String BASE_URL = "http://10.2.155.99:5003";
     // 配置信息所在文件
     public static final String PACKAGE_FILE_INDEX = "packageIndex.json";
 
