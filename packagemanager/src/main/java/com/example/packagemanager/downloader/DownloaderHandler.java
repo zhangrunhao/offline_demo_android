@@ -2,19 +2,16 @@ package com.example.packagemanager.downloader;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.webkit.WebResourceResponse;
 
-import com.example.packagemanager.PackageConfig;
+import com.example.packagemanager.Constants;
 import com.example.packagemanager.packageManager.PackageEntry;
 import com.example.packagemanager.packageManager.PackageInfo;
 import com.example.packagemanager.packageManager.PackageInstaller;
 import com.example.packagemanager.packageManager.PackageStatus;
 import com.example.packagemanager.resource.AssetResourceLoader;
-import com.example.packagemanager.resource.ResourceInfo;
 import com.example.packagemanager.resource.ResourceManager;
 import com.example.packagemanager.util.FileUtils;
 import com.example.packagemanager.util.GsonUtils;
@@ -54,7 +51,7 @@ public class DownloaderHandler extends Handler {
     // 需要访问的资源
     private List<PackageInfo> onlyUpdatePackageInfoList;
     private Map<String, Integer> packageStatusMap = new HashMap<>();
-    private PackageConfig config = new PackageConfig();
+//    private PackageConfig config = new PackageConfig();
 
     public DownloaderHandler(Context context, Looper looper, DownloadCallback callback) {
         super(looper);
@@ -104,10 +101,12 @@ public class DownloaderHandler extends Handler {
         if (assetResourceLoader == null) return;
         // TODO: 本地应该支持多个包的加载
         // 加载本地离线包
-        PackageInfo packageInfo = assetResourceLoader.load(config.getAssetPath());
-        if (packageInfo == null) return;
-        // 安装本地离线包
-        installPackage(packageInfo.getPackageId(), packageInfo, true);
+        for (int i = 0; i < Constants.LOCAL_ASSET_LIST.length; i++) {
+            PackageInfo packageInfo = assetResourceLoader.load(Constants.LOCAL_ASSET_LIST[i]);
+            if (packageInfo == null) return;
+            // 安装本地离线包
+            installPackage(packageInfo.getPackageId(), packageInfo, true);
+        }
     }
 
     // 开始更新

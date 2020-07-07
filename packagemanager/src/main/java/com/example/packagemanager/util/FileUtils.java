@@ -176,7 +176,7 @@ public class FileUtils {
                 + version + File.separator
                 + Constants.PACKAGE_DOWNLOAD;
     }
-    // 获取静态资源目录
+    // 获取package_assets.zip所在的目录
     public static String getPackageAssetsName(Context context, String packageId, String version) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;

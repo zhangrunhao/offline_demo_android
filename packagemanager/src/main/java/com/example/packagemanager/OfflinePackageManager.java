@@ -16,22 +16,19 @@ import com.example.packagemanager.downloader.DownloaderState;
  */
 public class OfflinePackageManager {
     private Context context;
-    private PackageConfig config = new PackageConfig();
     private DownloaderHandler packageHandler;
     private HandlerThread packageThread;
 
     public OfflinePackageManager(Context context) {
         this.context = context;
-        if (config.isEnableAssets() && !TextUtils.isEmpty(config.getAssetPath())) {
-            ensurePackageeThread();
-            packageHandler.sendEmptyMessage(DownloaderState.INIT_ASSETS);
-        }
+        ensurePackageThread();
+        packageHandler.sendEmptyMessage(DownloaderState.INIT_ASSETS);
     }
 
     // 更新离线包信息
     public void update(String packageJsonStr) {
         if (packageJsonStr == null) packageJsonStr = "";
-        ensurePackageeThread();
+        ensurePackageThread();
         Message message = Message.obtain();
         message.what = DownloaderState.START_UPDATE;
         message.obj = packageJsonStr;
@@ -43,7 +40,7 @@ public class OfflinePackageManager {
         return this.packageHandler.getResource(url);
     }
 
-    private void ensurePackageeThread() {
+    private void ensurePackageThread() {
         if (packageThread == null)  {
             packageThread = new HandlerThread("offline_package_thread");
             packageThread.start();

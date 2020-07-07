@@ -4,7 +4,11 @@ package com.example.packagemanager;
  * 存放常量信息
  */
 public class Constants {
-    // 远程离线包目录
+    // 本地预置安装包列表
+    public static String[] LOCAL_ASSET_LIST = {
+      "packageApp.zip", "main.zip"
+    };
+    // 服务器地址
     public static final String BASE_URL = "http://10.2.155.99:5003";
     // 配置信息所在文件
     public static final String PACKAGE_FILE_INDEX = "packageIndex.json";
