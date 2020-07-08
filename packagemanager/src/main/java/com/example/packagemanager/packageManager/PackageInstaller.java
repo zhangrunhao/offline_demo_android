@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.example.packagemanager.util.FileUtils;
 import com.example.packagemanager.util.GsonUtils;
 import com.example.packagemanager.util.Logger;
-import com.example.packagemanager.util.PatchUtils;
 import com.example.packagemanager.util.ZipUtils;
 
 import java.io.File;
@@ -14,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lib.bsdiff.PatchUtils;
 
 /**
  *
@@ -56,7 +57,7 @@ public class PackageInstaller {
             String mergePath = FileUtils.getPackageMergeName(context, packageInfo.getPackageId(), packageInfo.getVersion());
             int diffStatus = -1;
             try {
-                diffStatus = PatchUtils.getInstance().bsPatch(baseFile, downloadFile, mergePath);
+                diffStatus = PatchUtils.bsPatch(baseFile, downloadFile, mergePath);
             } catch (Exception e) {
                 Logger.e("pach error: " + e.getMessage());
                 e.printStackTrace();

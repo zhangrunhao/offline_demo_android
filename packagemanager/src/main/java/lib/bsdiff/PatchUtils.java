@@ -1,20 +1,11 @@
-package com.example.packagemanager.util;
-
+package lib.bsdiff;
 public class PatchUtils {
-
-    static PatchUtils instance;
-
-    public static PatchUtils getInstance() {
-        if (instance == null)
-            instance = new PatchUtils();
-        return instance;
-    }
 
     static {
         System.loadLibrary("native-lib");
     }
 
-    public native int bsPatch(String oldApk, String patch, String output);
+    public static native int bsPatch(String oldApk, String patch, String output);
 
     //    /**
 //     * native方法 使用路径为oldPath的文件与路径为patchPath的补丁包，合成新的文件，并存储于newPath

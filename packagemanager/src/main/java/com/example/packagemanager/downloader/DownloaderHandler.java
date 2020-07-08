@@ -83,15 +83,15 @@ public class DownloaderHandler extends Handler {
     }
 
     // 获取资源
-    public WebResourceResponse getResource(String url) {
+    public WebResourceResponse getResource(String packageId, String path) {
         synchronized (packageStatusMap) {
-            String packageId = resourceManager.getPackageId(url);
             Integer status = packageStatusMap.get(packageId);
             if (status == null ) return null;
             if (status != STATUS_PACKAGE_CAN_USE) return null;
+
             WebResourceResponse response = null;
             if (!resourceLock.tryLock()) return null;
-            response = resourceManager.getWebResponseResource(url);
+            response = resourceManager.getWebResponseResource(packageId, path);
             resourceLock.unlock();
             return response;
         }

@@ -37,16 +37,10 @@ public class ResourceManager {
         this.lock = new ReentrantLock();
         this.validator = new ResourceValidator();
     }
-    // 获取离线包id
-    public String getPackageId(String url) {
-        if (!lock.tryLock()) return null;
-        ResourceInfo resourceInfo = resourceInfoMap.get(new ResourceKey(url));
-        lock.unlock();
-        if (resourceInfo != null) return resourceInfo.getPackageId();
-        return null;
-    }
+
     // 更新资源
     public boolean updateResource(String packageId, String version) {
+        // index.json
         String indexFileName = FileUtils.getPackageWorkName(context, packageId, version)
             + File.separator
             + Constants.RESOURCE_MIDDLE_PATH
@@ -75,6 +69,7 @@ public class ResourceManager {
             return false;
         }
 
+        // index.json => ResourceInfoEntry.class
         ResourceInfoEntry entry = GsonUtils.jsonFromFileStream(indexFileStream, ResourceInfoEntry.class);
         if (indexFileStream != null) {
             try {
@@ -84,8 +79,11 @@ public class ResourceManager {
         }
         if (entry == null) return false;
 
+        // 获取所有的资源列表
         List<ResourceInfo> resourceInfos = entry.getItems();
         if (resourceInfos == null) return true;
+
+
         String workPath = FileUtils.getPackageWorkName(context, packageId, version);
         for (ResourceInfo resourceInfo: resourceInfos) {
             if (TextUtils.isEmpty(resourceInfo.getPath())) continue;
@@ -100,33 +98,29 @@ public class ResourceManager {
                     + path
             );
             lock.lock();
-            resourceInfoMap.put(new ResourceKey(resourceInfo.getRemoteUrl()), resourceInfo);
+            resourceInfoMap.put(new ResourceKey(resourceInfo.getPackageId(), resourceInfo.getPath()), resourceInfo);
             lock.unlock();
         }
         return true;
     }
     // 获取网络响应资源
-    public WebResourceResponse getWebResponseResource (String url) {
-        ResourceKey key = new ResourceKey(url);
+    public WebResourceResponse getWebResponseResource (String packageId, String path) {
+        ResourceKey key = new ResourceKey(packageId, path);
         if (!(lock.tryLock())) return null;
         ResourceInfo resourceInfo = resourceInfoMap.get(key);
         if (resourceInfo == null) return null;
         if (!(MimeTypeUtils.checkIsSupportMimeType(resourceInfo.getMimeType()))) {
-            Logger.d("getWebResponseResource: " + url + "not support mime type");
+            Logger.d("getWebResponseResource: " + packageId + ": " + path + "not support mime type");
             safeRemoveResource(key);
             return null;
         }
 
         InputStream inputStream = FileUtils.getInputStream(resourceInfo.getLocalPath());
         if (inputStream == null) {
-            Logger.e("getWebResponseResource: " + url + " inputStream is null");
+            Logger.e("getWebResponseResource: " + packageId + ": " + path + " inputStream is null");
             return null;
         }
         // TODO: 资源验证
-//        if (validator !=null && !validator.validate(resourceInfo)) {
-//            safeRemoveResource(key);
-//            return null;
-//        }
 
         WebResourceResponse response;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

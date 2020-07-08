@@ -237,7 +237,7 @@ public class FileUtils {
         if (fileInputStream == null) return null;
         return new BufferedInputStream(fileInputStream);
     }
-    // 根据packageId获取工作目录
+    // 获取work文件夹目录
     public static String getPackageWorkName(Context context, String packageId, String version) {
         String root = getPackageRootPath(context);
         if (TextUtils.isEmpty(root)) return null;

@@ -5,7 +5,6 @@ package com.example.packagemanager.resource;
  */
 public class ResourceInfo {
     private String packageId; // 关联的包id
-    private String remoteUrl; // 关联的远程地址
     private String path; // 相对路径
     private String localPath; // 本地加载地址
     private String mimeType; // 类型
@@ -13,9 +12,6 @@ public class ResourceInfo {
 
     public void setPackageId(String packageId) {
         this.packageId = packageId;
-    }
-    public void setRemoteUrl(String remoteUrl) {
-        this.remoteUrl = remoteUrl;
     }
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
@@ -28,7 +24,6 @@ public class ResourceInfo {
     }
 
     public String getPackageId() {return this.packageId;}
-    public String getRemoteUrl() {return this.remoteUrl;}
     public String getLocalPath() {return this.localPath;}
     public String getMimeType() {return this.mimeType;}
     public String getPath() {return this.path;}
