@@ -15,6 +15,7 @@ import com.example.packagemanager.resource.AssetResourceLoader;
 import com.example.packagemanager.resource.ResourceManager;
 import com.example.packagemanager.util.FileUtils;
 import com.example.packagemanager.util.GsonUtils;
+import com.example.packagemanager.util.IOUtils;
 import com.example.packagemanager.util.Logger;
 import com.example.packagemanager.util.VersionUtils;
 import com.google.gson.Gson;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +84,8 @@ public class DownloaderHandler extends Handler {
         super.handleMessage(msg);
     }
 
-    // 获取资源
-    public WebResourceResponse getResource(String packageId, String path) {
+    // 获取网络有响应资源资源
+    public WebResourceResponse getWebResourceResponseResource(String packageId, String path) {
         synchronized (packageStatusMap) {
             Integer status = packageStatusMap.get(packageId);
             if (status == null ) return null;
@@ -96,6 +98,7 @@ public class DownloaderHandler extends Handler {
             return response;
         }
     }
+
     // init 加载本地静态资源
     private void performLoadAssets() {
         if (assetResourceLoader == null) return;

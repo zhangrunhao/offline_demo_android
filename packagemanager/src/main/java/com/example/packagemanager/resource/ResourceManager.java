@@ -108,9 +108,10 @@ public class ResourceManager {
         ResourceKey key = new ResourceKey(packageId, path);
         if (!(lock.tryLock())) return null;
         ResourceInfo resourceInfo = resourceInfoMap.get(key);
+        lock.unlock();
         if (resourceInfo == null) return null;
         if (!(MimeTypeUtils.checkIsSupportMimeType(resourceInfo.getMimeType()))) {
-            Logger.d("getWebResponseResource: " + packageId + ": " + path + "not support mime type");
+            Logger.d("getWebResponseResource: " + packageId + ": " + path + " not support mime type");
             safeRemoveResource(key);
             return null;
         }

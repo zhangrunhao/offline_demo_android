@@ -6,7 +6,7 @@ package com.example.packagemanager;
 public class Constants {
     // 本地预置安装包列表
     public static String[] LOCAL_ASSET_LIST = {
-      "packageApp.zip", "main.zip"
+            "package.zip"
     };
     // 服务器地址
     public static final String BASE_URL = "http://10.2.155.99:5003";

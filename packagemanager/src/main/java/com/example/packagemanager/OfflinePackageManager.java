@@ -16,10 +16,21 @@ import com.example.packagemanager.downloader.DownloaderState;
  */
 public class OfflinePackageManager {
     private Context context;
-    private DownloaderHandler packageHandler;
-    private HandlerThread packageThread;
+    private static DownloaderHandler packageHandler;
+    private static HandlerThread packageThread;
+    private static OfflinePackageManager instance;
 
-    public OfflinePackageManager(Context context) {
+    public OfflinePackageManager() {
+    }
+
+    public static OfflinePackageManager getInstance() {
+        if (instance == null) {
+            instance = new OfflinePackageManager();
+        }
+        return instance;
+    }
+
+    public void init (Context context) {
         this.context = context;
         ensurePackageThread();
         packageHandler.sendEmptyMessage(DownloaderState.INIT_ASSETS);
@@ -35,16 +46,17 @@ public class OfflinePackageManager {
         packageHandler.sendMessage(message);
     }
 
-    // 获取资源
-    public WebResourceResponse getResource(String url) {
-        return this.packageHandler.getResource(url);
+    // 获取网络响应资源资源
+    public WebResourceResponse getWebResponseResource(String packageId, String path) {
+        return this.packageHandler.getWebResourceResponseResource(packageId, path);
     }
+
 
     private void ensurePackageThread() {
         if (packageThread == null)  {
             packageThread = new HandlerThread("offline_package_thread");
             packageThread.start();
-            packageHandler = new DownloaderHandler(this.context, packageThread.getLooper(), new DownloadCallback() {
+            packageHandler = new DownloaderHandler(context, packageThread.getLooper(), new DownloadCallback() {
                 @Override
                 public void onSuccess(String packageId) {
                     Message message = Message.obtain();

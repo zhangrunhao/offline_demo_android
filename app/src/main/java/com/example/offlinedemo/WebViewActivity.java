@@ -3,13 +3,18 @@ package com.example.offlinedemo;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+
+import com.example.packagemanager.OfflinePackageManager;
+import com.example.packagemanager.util.Logger;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -26,18 +31,22 @@ public class WebViewActivity extends AppCompatActivity {
 
         dwebView = findViewById(R.id.dwebview);
         dwebView.addJavascriptObject(new JsApi(), null);
-        dwebView.loadUrl("http://192.168.1.47:6622/offline_demo_fe/index.html");
         dwebView.setWebContentsDebuggingEnabled(true);
         // 拦截请求, 并更改css
-        dwebView.setWebViewClient(new WebViewClient(){
+        dwebView.setWebViewClient(new WebViewClient() {
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 WebResourceResponse response = null;
-                if (request.getUrl().toString().equals("http://192.168.1.47:6622/offline_demo_fe/css/index.css")) {
+                Uri uri = request.getUrl();
+//                String url = request.getUrl().toString();
+                String scheme = uri.getScheme();
+                String path = uri.getPath().replaceFirst("/", "");
+                String packageId = uri.getHost();
+
+                if (TextUtils.equals(scheme, "mini")) {
                     try {
-                        InputStream is = new FileInputStream("/data/user/0/com.example.offlinedemo/files/css/index.css");
-                        response = new WebResourceResponse("text/css", "UTF-8", is);
+                        response = OfflinePackageManager.getInstance().getWebResponseResource(packageId, path);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -45,6 +54,8 @@ public class WebViewActivity extends AppCompatActivity {
                 return response;
             }
         });
+        dwebView.loadUrl("mini://meeting/index.html");
+
         Button btn = (Button) findViewById(R.id.button3);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

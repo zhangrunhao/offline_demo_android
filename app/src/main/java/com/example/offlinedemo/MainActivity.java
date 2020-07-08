@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
-        this.packageManager = new OfflinePackageManager(context);
+        OfflinePackageManager.getInstance().init(context);
     }
 
     public void  sendMessage(View view) {
@@ -54,59 +54,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void downloadZip(View view) {
-        that = this;
-        FileDownloader.setup(this);
-        FileDownloader
-                .getImpl()
-                .create("https://zhangrunhao.oss-cn-beijing.aliyuncs.com/offline_zip/test.zip")
-                .setPath(FileDownloadUtils.getDefaultSaveRootPath() + File.separator + "test_save" + File.separator + "123.zip")
-                .setForceReDownload(true)
-                .setListener(new FileDownloadLargeFileListener() {
-                    @Override
-                    protected void pending(BaseDownloadTask task, long soFarBytes, long totalBytes) {
-                        Log.i("tag", "pending: ");
-                    }
-
-                    @Override
-                    protected void progress(BaseDownloadTask task, long soFarBytes, long totalBytes) {
-                        Log.i("TAG", "progress: ");
-                    }
-
-                    @Override
-                    protected void paused(BaseDownloadTask task, long soFarBytes, long totalBytes) {
-                        Log.i("TAG", "paused: ");
-                    }
-
-                    @Override
-                    protected void completed(BaseDownloadTask task) {
-                        Log.i("TAG", "completed: " + task.getPath());
-                        try {
-                            FileInputStream inputStream = new FileInputStream(task.getTargetFilePath());
-                            CompressUtils.unzip(inputStream, getFilesDir());
-//                            readFile();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    protected void error(BaseDownloadTask task, Throwable e) {
-                        Log.i("TAG", "error: ");
-                    }
-
-                    @Override
-                    protected void warn(BaseDownloadTask task) {
-                        Log.i("TAG", "warn: ");
-                    }
-                }).start();
-    }
-
-    public void openMyWebView(View view) {
-//        WebResourceResponse response = packageManager.getResource("http://10.2.155.99/main.css");
-//        Intent intent = new Intent(this, WebViewActivity.class);
-//        startActivity(intent);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -116,14 +63,18 @@ public class MainActivity extends AppCompatActivity {
                     Request request = new Request.Builder().url(url).build();
                     try (Response response = client.newCall(request).execute()) {
                         String data =  response.body().string();
-                        Log.d("getPackageIndex", "do post");
-                        packageManager.update(data);
+                        OfflinePackageManager.getInstance().update(data);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    public void openMyWebView(View view) {
+        Intent intent = new Intent(this, WebViewActivity.class);
+        startActivity(intent);
     }
 
     private void readFile() throws IOException {
